@@ -17,3 +17,10 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+/nbproject
+/nbproject/private/
+composer.lock
+package-lock.json
+/package-lock.json
+
