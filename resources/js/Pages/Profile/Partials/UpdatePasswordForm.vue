@@ -36,15 +36,15 @@ const updatePassword = () => {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">Update Password</h2>
+            <h3>Update Password</h3>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1">
                 Ensure your account is using a long, random password to stay secure.
             </p>
         </header>
 
-        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
+        <form @submit.prevent="updatePassword" class="mt-3">
+            <div class="mb-3">
                 <InputLabel for="current_password" value="Current Password" />
 
                 <TextInput
@@ -52,14 +52,14 @@ const updatePassword = () => {
                     ref="currentPasswordInput"
                     v-model="form.current_password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class=""
                     autocomplete="current-password"
                 />
 
-                <InputError :message="form.errors.current_password" class="mt-2" />
+                <InputError :message="form.errors.current_password" class="" />
             </div>
 
-            <div>
+            <div class="mb-3">
                 <InputLabel for="password" value="New Password" />
 
                 <TextInput
@@ -67,34 +67,41 @@ const updatePassword = () => {
                     ref="passwordInput"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class=""
                     autocomplete="new-password"
                 />
 
-                <InputError :message="form.errors.password" class="mt-2" />
+                <InputError :message="form.errors.password" class="" />
             </div>
 
-            <div>
+            <div class="mb-3">
                 <InputLabel for="password_confirmation" value="Confirm Password" />
 
                 <TextInput
                     id="password_confirmation"
                     v-model="form.password_confirmation"
                     type="password"
-                    class="mt-1 block w-full"
+                    class=""
                     autocomplete="new-password"
                 />
 
-                <InputError :message="form.errors.password_confirmation" class="mt-2" />
+                <InputError :message="form.errors.password_confirmation" class="" />
             </div>
 
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
 
-                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                <Transition
+                    name="custom-classes"
+                    enter-active-class="animate__animated animate__fadeIn"
+                    leave-active-class="animate__animated animate__fadeOut"
+                >
+                    <div v-if="form.recentlySuccessful" class="alert alert-success mt-3">Saved.</div>
                 </Transition>
             </div>
         </form>
     </section>
 </template>
+<style>
+@import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css";
+</style>

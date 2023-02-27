@@ -29,58 +29,61 @@ const submit = () => {
     <GuestLayout>
         <Head title="Reset Password" />
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <div class="card mx-auto" style="max-width: 400px;">
+            <div class="card-body">
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+                <form @submit.prevent="submit">
+                    <div class="mb-3">
+                        <InputLabel for="email" value="Email" />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            class=""
+                            v-model="form.email"
+                            required
+                            autofocus
+                            autocomplete="username"
+                        />
+
+                        <InputError :message="form.errors.email" />
+                    </div>
+
+                    <div class="mb-3">
+                        <InputLabel for="password" value="Password" />
+
+                        <TextInput
+                            id="password"
+                            type="password"
+                            class=""
+                            v-model="form.password"
+                            required
+                            autocomplete="new-password"
+                        />
+
+                        <InputError :message="form.errors.password" />
+                    </div>
+
+                    <div class="mb-3">
+                        <InputLabel for="password_confirmation" value="Confirm Password" />
+
+                        <TextInput
+                            id="password_confirmation"
+                            type="password"
+                            class=""
+                            v-model="form.password_confirmation"
+                            required
+                            autocomplete="new-password"
+                        />
+
+                        <InputError :message="form.errors.password_confirmation" />
+                    </div>
+
+                    <PrimaryButton class="w-100" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        Reset Password
+                    </PrimaryButton>
+                </form>
             </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Reset Password
-                </PrimaryButton>
-            </div>
-        </form>
+        </div>
     </GuestLayout>
 </template>

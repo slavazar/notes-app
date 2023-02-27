@@ -8,7 +8,8 @@ module.exports = {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
-
+    variants: {
+    },
     theme: {
         extend: {
             fontFamily: {
@@ -17,5 +18,17 @@ module.exports = {
         },
     },
 
-    plugins: [require('@tailwindcss/forms')],
+    plugins: [require('@tailwindcss/forms'), require("daisyui")],
+
+    // daisyUI config (optional)
+    daisyui: {
+        styled: true,
+        themes: ["light", "dark", "cupcake", "corporate"],
+        base: true,
+        utils: true,
+        logs: true,
+        rtl: false,
+        prefix: "",
+        darkTheme: "dark",
+    },
 };
