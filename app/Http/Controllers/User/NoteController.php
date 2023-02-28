@@ -38,7 +38,15 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'errors' => null,
+        ]);
+        return response()->json([
+            'success' => false,
+            'errors' => ['Some error'],
+        ]);
+        
     }
 
     /**
