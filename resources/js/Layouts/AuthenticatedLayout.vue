@@ -51,6 +51,19 @@ const showingNavigationDropdown = ref(false);
             <slot name="header" />
         </header>
         <main>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div v-if="$page.props.flash.success" class="success-message mb-3">
+                        <div class="alert alert-success" role="alert">{{ $page.props.flash.success }}</div>
+                    </div>
+                    <div v-if="$page.props.flash.status" class="status-message mb-3">
+                        <div class="alert alert-primary" role="alert">{{ $page.props.flash.status }}</div>
+                    </div>
+                    <div v-if="$page.props.flash.error" class="status-message mb-3">
+                        <div class="alert alert-danger" role="alert">{{ $page.props.flash.danger }}</div>
+                    </div>
+                </div>
+            </div>
             <slot />
         </main>
     </div>

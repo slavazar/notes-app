@@ -41,20 +41,17 @@ class NoteController extends Controller
     {
         $user = Auth::user();
         
-        /*
         if (!$user->canAddNote()) {
             return response()->json([
                 'success' => false,
                 'payload' => [],
                 'error' => [
                     'code' => 400,
-                    'message' => __('You cannot add the note.'),
-                    'errors' => [__('You cannot add the note.')]
+                    'message' => __('You cannot add new note. You have reached the maximum.'),
+                    'errors' => [__('You cannot add new note. You have reached the maximum.')]
                 ],
             ]);
         }
-         * 
-         */
 
         $messages = [
             'required' => 'The :attribute is required.',
@@ -124,6 +121,26 @@ class NoteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $note = UserNote::find($id);
+        
+        if (empty($note)) {
+            return redirect()->back()
+                ->with('error', __('Invalid item.'));
+        }
+        
+        $user = Auth::user();
+        
+        /*
+        if ($user->cannot('delete', $note)) {
+            return redirect()->route('account.notes.index')
+                ->with('error', __('You are not allowed to delete this item.'));
+        }
+         * 
+         */
+        
+        $note->delete();
+        
+        return redirect()->back()
+            ->with('status', __('The note was deleted successfully.'));
     }
 }

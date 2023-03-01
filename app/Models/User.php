@@ -51,5 +51,17 @@ class User extends Authenticatable
     public function notes()
     {
         return $this->hasMany(Note::class, 'user_id');
-    }    
+    }
+    
+    public function canAddNote()
+    {
+        $max = 10;
+        $count = $this->notes()->count();
+        
+        if ($count < $max) {
+            return true;
+        }
+        
+        return false;
+    }
 }

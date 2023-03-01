@@ -72,6 +72,14 @@ const storeUserNote = () => {
         resetPage();
     });
 };
+
+function destroyUserNote(id) {
+    var confirmation = confirm('Are you sure to delete the note?');
+    if (confirmation) {
+        router.delete(route("account.notes.destroy", {id: id}));
+    }
+}
+
 </script>
 
 <template>
@@ -97,7 +105,7 @@ const storeUserNote = () => {
                         <div class="card-text mb-3">{{ user_note.description }}</div>
                         <div class="actions">
                             <a href="#" class="btn btn-primary me-2">View</a>
-                            <a href="#" class="btn btn-danger">Delete</a>
+                            <a @click.prevent="destroyUserNote(user_note.id)" class="btn btn-danger">Delete</a>
                         </div>
                     </div>
                 </div>
