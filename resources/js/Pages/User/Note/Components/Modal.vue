@@ -46,7 +46,7 @@ const save = () => {
 onMounted(() => {
     userModal.value = new bootstrap.Modal('#user-note-modal', {
         keyboard: false,
-        backdrop: false
+        backdrop: 'static'
     });
     
     const userModalElem = document.getElementById('user-note-modal');
@@ -63,7 +63,7 @@ onUnmounted(() => {
 
 <template>
     <teleport to="body">
-        <div id="user-note-modal" class="modal" tabindex="-1">
+        <div id="user-note-modal" class="modal fade" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

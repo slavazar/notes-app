@@ -5,8 +5,9 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
-use App\Models\User\Note;
+use App\Models\User\Note as UserNote;
 
 class NoteController extends Controller
 {
@@ -18,7 +19,7 @@ class NoteController extends Controller
         $notes = Auth::user()
             ->notes()
             ->orderBy('id', 'desc')
-            ->paginate(2);
+            ->paginate(8);
         
         return Inertia::render('User/Note/Index', [
             'user_notes' => $notes,
@@ -38,13 +39,58 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        
+        /*
+        if (!$user->canAddNote()) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 400,
+                    'message' => __('You cannot add the note.'),
+                    'errors' => [__('You cannot add the note.')]
+                ],
+            ]);
+        }
+         * 
+         */
+
+        $messages = [
+            'required' => 'The :attribute is required.',
+        ];
+        
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:100',
+            'description' => 'required|min:3|max:500',
+        ], $messages);
+ 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 406,
+                    'message' => __('Validation errors.'),
+                    'errors' => $validator->errors()
+                ],
+            ]);
+        }
+ 
+        // Retrieve the validated input...
+        $data = $validator->validated();
+        
+        $data['user_id'] = $user->id;
+        
+        $note = UserNote::create($data);
+        
         return response()->json([
             'success' => true,
-            'errors' => null,
-        ]);
-        return response()->json([
-            'success' => false,
-            'errors' => ['Some error'],
+            'payload' => [
+                'user_note' => $note,
+                'message' => __('The note was added successfully.')
+            ],
+            'error' => null,
         ]);
         
     }

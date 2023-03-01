@@ -1,26 +1,36 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from "@inertiajs/vue3";
 import { Link } from "@inertiajs/vue3";
+import { useForm, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import UserNoteModal from '@/Pages/User/Note/Components/Modal.vue';
-import { useForm } from '@inertiajs/vue3';
-
-import { nextTick, ref } from 'vue';
+import Pagination from '@/Shared/Pagination.vue';
 
 const showModalWindow = ref(false);
 const modalWindowErrors = ref(null);
 
 const userNoteForm = useForm({
+    id: null,
     title: null,
     description: null
 });
-
 
 const props = defineProps({
     user_notes: {
         type: Object,
     },
 });
+
+const resetPage = () => {
+    router.get(route("account.notes.index"));
+};
+
+const refreshPage = () => {
+    router.get(window.location.href, {}, {
+        preserveScroll: true,
+    });
+};
 
 const openModalWindow = () => {
     showModalWindow.value = true;
@@ -33,24 +43,33 @@ const closeModalWindow = () => {
     userNoteForm.reset();
 };
 
+const createUserNote = () => {
+    openModalWindow();
+};
+
 const storeUserNote = () => {
-
     const url = route("account.notes.store");
-
+    
     window.axios.post(url, {
         title: userNoteForm.title,
         description: userNoteForm.description,
     }).then((response) => {
-        //console.log(response);
-        //console.log(response.data);
-
-        if (response.data.errors) {
-            modalWindowErrors.value = response.data.errors;
+        if (response.data.error) {
+            if (response.data.error.code == 406) {
+                modalWindowErrors.value = [];
+                let errors = response.data.error.errors;
+                Object.entries(errors).forEach(entry => {
+                    let [key, messages] = entry;
+                    modalWindowErrors.value = modalWindowErrors.value.concat(messages);
+                });
+            } else {
+                modalWindowErrors.value = [response.data.error.message];
+            }
 
             return;
         }
         
-        closeModalWindow();
+        resetPage();
     });
 };
 </script>
@@ -64,29 +83,28 @@ const storeUserNote = () => {
         </template>
         <div class="row mb-3">
             <div class="col">
-                <a href="#" @click.prevent="openModalWindow" class="btn btn-primary">Add a note</a>
+                <a href="#" @click.prevent="createUserNote" class="btn btn-primary">Add a note</a>
             </div>
         </div>
-        <div class="row items">
+        <div class="row items mb-3">
             <div v-if="user_notes.data.length == 0" class="col-12">
                 <div class="fst-italic mt-3">No items</div>
             </div>
-            <div v-for="user_note in user_notes.data" :id="`user_note-${user_note.id}`" class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="item">
-                    <div class="data data-id">
-                        <div class="title">ID:</div>
-                        <div class="value">{{ user_note.id }}</div>
-                    </div>
-                    <div class="data">
-                        <div class="title">Title</div>
-                        <div class="value">{{ user_note.title }}</div>
-                    </div>
-                    <div class="actions">
+            <div v-for="user_note in user_notes.data" :id="`user_note-${user_note.id}`" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user_note.title }}</h5>
+                        <div class="card-text mb-3">{{ user_note.description }}</div>
+                        <div class="actions">
+                            <a href="#" class="btn btn-primary me-2">View</a>
+                            <a href="#" class="btn btn-danger">Delete</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <UserNoteModal :show="showModalWindow" :formErrors="modalWindowErrors" @closeModal="closeModalWindow" @saveModal="storeUserNote">
+        <Pagination :links="user_notes.links" />
+        <UserNoteModal :show="showModalWindow" :form-errors="modalWindowErrors" @close-modal="closeModalWindow" @save-modal="storeUserNote">
             <div class="mb-3">
                 <label class="form-label">Title</label>
                 <input type="text" class="form-control" v-model="userNoteForm.title">
