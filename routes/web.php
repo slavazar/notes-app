@@ -38,6 +38,8 @@ Route::middleware('auth')->prefix('account')->group(function () {
     Route::name('account.')->group(function () {
         Route::resource('notes', NoteController::class);    
     });
+    
+    Route::get('/notes/item/{id}', [NoteController::class, 'getItem'])->name('account.notes.item');
 });
 
 require __DIR__.'/auth.php';

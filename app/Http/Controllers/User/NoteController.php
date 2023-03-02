@@ -113,7 +113,70 @@ class NoteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $note = UserNote::find($id);
+        
+        if (empty($note)) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 400,
+                    'message' => __('Invalid item.'),
+                    'errors' => [__('Invalid item.')]
+                ],
+            ]);
+        }
+        
+        $user = Auth::user();
+        
+        if ($user->cannot('update', $note)) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 400,
+                    'message' => __('You are not allowed to update this item.'),
+                    'errors' => [__('You are not allowed to update this item.')]
+                ],
+            ]);
+        }
+
+        $messages = [
+            'required' => 'The :attribute is required.',
+        ];
+        
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:100',
+            'description' => 'required|min:3|max:500',
+        ], $messages);
+ 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 406,
+                    'message' => __('Validation errors.'),
+                    'errors' => $validator->errors()
+                ],
+            ]);
+        }
+ 
+        // Retrieve the validated input...
+        $data = $validator->validated();
+        
+        $note->title = $data['title'];
+        $note->description = $data['description'];
+        $note->save();
+        
+        return response()->json([
+            'success' => true,
+            'payload' => [
+                'user_note' => $note,
+                'message' => __('The note was added successfully.')
+            ],
+            'error' => null,
+        ]);
     }
 
     /**
@@ -130,17 +193,53 @@ class NoteController extends Controller
         
         $user = Auth::user();
         
-        /*
         if ($user->cannot('delete', $note)) {
             return redirect()->route('account.notes.index')
                 ->with('error', __('You are not allowed to delete this item.'));
         }
-         * 
-         */
         
         $note->delete();
         
         return redirect()->back()
             ->with('status', __('The note was deleted successfully.'));
+    }
+    
+    public function getItem(string $id)
+    {
+        $note = UserNote::find($id);
+        
+        if (empty($note)) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 400,
+                    'message' => __('Invalid item.'),
+                    'errors' => [__('Invalid item.')]
+                ],
+            ]);
+        }
+        
+        $user = Auth::user();
+        
+        if ($user->cannot('update', $note)) {
+            return response()->json([
+                'success' => false,
+                'payload' => [],
+                'error' => [
+                    'code' => 400,
+                    'message' => __('You are not allowed to update this item.'),
+                    'errors' => [__('You are not allowed to update this item.')]
+                ],
+            ]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'payload' => [
+                'user_note' => $note,
+            ],
+            'error' => null,
+        ]);
     }
 }

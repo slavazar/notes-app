@@ -23,13 +23,21 @@ const props = defineProps({
 });
 
 const resetPage = () => {
-    router.get(route("account.notes.index"));
+    router.get(route("account.notes.index"), {}, {
+        preserveState: false,
+        preserveScroll: false
+    });
 };
 
 const refreshPage = () => {
-    router.get(window.location.href, {}, {
-        preserveScroll: true,
+    router.reload({
+        preserveState: false,
+        preserveScroll: false
     });
+};
+
+function truncateString(str, n) {
+    return (str.length > n) ? str.slice(0, n-1) + ' &hellip;' : str;
 };
 
 const openModalWindow = () => {
@@ -68,9 +76,63 @@ const storeUserNote = () => {
 
             return;
         }
-        
+
+        closeModalWindow();
         resetPage();
     });
+};
+
+const editUserNote = (id) => {
+    const url = route("account.notes.item", {id: id});
+    
+    window.axios.get(url)
+        .then((response) => {
+            if (response.data.error) {
+                alert(response.data.error.message);
+                return;
+            }
+            
+            userNoteForm.id = response.data.payload.user_note.id;
+            userNoteForm.title = response.data.payload.user_note.title;
+            userNoteForm.description = response.data.payload.user_note.description;
+            
+            openModalWindow();
+        });
+};
+
+const updateUserNote = (id) => {
+    const url = route("account.notes.update", {id: id});
+    
+    window.axios.put(url, {
+        title: userNoteForm.title,
+        description: userNoteForm.description,
+    }).then((response) => {
+        if (response.data.error) {
+            if (response.data.error.code == 406) {
+                modalWindowErrors.value = [];
+                let errors = response.data.error.errors;
+                Object.entries(errors).forEach(entry => {
+                    let [key, messages] = entry;
+                    modalWindowErrors.value = modalWindowErrors.value.concat(messages);
+                });
+            } else {
+                modalWindowErrors.value = [response.data.error.message];
+            }
+
+            return;
+        }
+        
+        closeModalWindow();
+        refreshPage();
+    });
+};
+
+const saveUserNote = () => {
+    if (userNoteForm.id) {
+        updateUserNote(userNoteForm.id);
+    } else {
+        storeUserNote();
+    }
 };
 
 function destroyUserNote(id) {
@@ -102,17 +164,17 @@ function destroyUserNote(id) {
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ user_note.title }}</h5>
-                        <div class="card-text mb-3">{{ user_note.description }}</div>
+                        <div class="card-text mb-3" v-html="truncateString(user_note.description, 50)"></div>
                         <div class="actions">
-                            <a href="#" class="btn btn-primary me-2">View</a>
-                            <a @click.prevent="destroyUserNote(user_note.id)" class="btn btn-danger">Delete</a>
+                            <a href="#" @click.prevent="editUserNote(user_note.id)" class="btn btn-primary me-2">View</a>
+                            <a href="#" @click.prevent="destroyUserNote(user_note.id)" class="btn btn-danger">Delete</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <Pagination :links="user_notes.links" />
-        <UserNoteModal :show="showModalWindow" :form-errors="modalWindowErrors" @close-modal="closeModalWindow" @save-modal="storeUserNote">
+        <UserNoteModal :show="showModalWindow" :form-errors="modalWindowErrors" @close-modal="closeModalWindow" @save-modal="saveUserNote">
             <div class="mb-3">
                 <label class="form-label">Title</label>
                 <input type="text" class="form-control" v-model="userNoteForm.title">

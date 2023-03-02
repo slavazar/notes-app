@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, watch, ref } from 'vue';
 
-const userModal = ref(null);
+const bsModal = ref(null);
 
 const props = defineProps({
     show: {
@@ -20,51 +20,40 @@ watch(
     () => props.show,
     () => {
         if (props.show) {
-            userModal.value.show();
+            bsModal.value.show();
         } else {
-            userModal.value.hide();
+            console.log('hide modal');
+            bsModal.value.hide();
         }
     }
 );
-
-watch(
-    () => props.formErrors,
-    () => {
-        if (props.formErrors) {
-        }
-    }
-);
-
-const close = () => {
-    emit('closeModal');
-};
 
 const save = () => {
     emit('saveModal');
 };
 
 onMounted(() => {
-    userModal.value = new bootstrap.Modal('#user-note-modal', {
+    bsModal.value = new bootstrap.Modal('#user-note-modal', {
         keyboard: false,
         backdrop: 'static'
     });
     
-    const userModalElem = document.getElementById('user-note-modal');
+    const bsModalElem = document.getElementById('user-note-modal');
     
-    userModalElem.addEventListener('hidden.bs.modal', event => {
-        close();
+    bsModalElem.addEventListener('hidden.bs.modal', event => {
+            console.log('modal was hidden');
+        if (props.show) {
+            console.log('emit close event');
+            emit('closeModal');
+        }
     });
-});
-
-onUnmounted(() => {
-    userModal.value.dispose();
 });
 </script>
 
 <template>
     <teleport to="body">
         <div id="user-note-modal" class="modal fade" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Note</h5>
