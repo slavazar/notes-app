@@ -1,7 +1,8 @@
 <script setup>
-import { computed, onMounted, onUnmounted, watch, ref } from 'vue';
+import { onMounted, onUnmounted, watch, ref } from 'vue';
 
 const bsModal = ref(null);
+const bsModalElem = ref(null);
 
 const props = defineProps({
     show: {
@@ -22,7 +23,7 @@ watch(
         if (props.show) {
             bsModal.value.show();
         } else {
-            console.log('hide modal');
+            //console.log('hide modal');
             bsModal.value.hide();
         }
     }
@@ -38,15 +39,20 @@ onMounted(() => {
         backdrop: 'static'
     });
     
-    const bsModalElem = document.getElementById('user-note-modal');
+    bsModalElem.value = document.getElementById('user-note-modal');
     
-    bsModalElem.addEventListener('hidden.bs.modal', event => {
-            console.log('modal was hidden');
+    bsModalElem.value.addEventListener('hidden.bs.modal', event => {
+        //console.log('modal was hidden');
         if (props.show) {
-            console.log('emit close event');
+            //console.log('emit close event');
             emit('closeModal');
         }
     });
+});
+
+onUnmounted(() => {
+    bsModal.value = null;
+    bsModalElem.value = null;
 });
 </script>
 

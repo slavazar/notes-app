@@ -44,7 +44,7 @@ const openModalWindow = () => {
     showModalWindow.value = true;
 };
 
-const closeModalWindow = () => {
+async function closeModalWindow() {
     showModalWindow.value = false;
     modalWindowErrors.value = null;
 
@@ -77,8 +77,7 @@ const storeUserNote = () => {
             return;
         }
 
-        closeModalWindow();
-        resetPage();
+        closeModalWindow().then(resetPage);
     });
 };
 
@@ -122,8 +121,7 @@ const updateUserNote = (id) => {
             return;
         }
         
-        closeModalWindow();
-        refreshPage();
+        closeModalWindow().then(refreshPage);
     });
 };
 
