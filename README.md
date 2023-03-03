@@ -2,7 +2,7 @@
 
 The application is created using:
 - PHP
-- Laravel 9.x framework
+- Laravel 10.x framework
 - MySQL
 - JavaScript
 - Vue JS 3.x
