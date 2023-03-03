@@ -1,5 +1,7 @@
 ### Simple web application to create, update notes.
 
+The user creates, updates the note in the modal window (Bottstrap 5 modal plugin).
+
 The application is created using:
 - PHP
 - Laravel 10.x framework
