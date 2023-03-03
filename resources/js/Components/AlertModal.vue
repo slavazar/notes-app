@@ -9,31 +9,26 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    formErrors: {
-        type: Object,
+    title: {
+        type: String,
         default: null,
     },
 });
 
-const emit = defineEmits(['closeModal', 'saveModal']);
+const emit = defineEmits(['closeAppModal', 'submitAppModal']);
 
-const showModal = () => {
+function showModal() {
     if (bsModal.value) {
         bsModal.value.show();
     }
-};
+}
 
-const hideModal = () => {
+function hideModal() {
     if (bsModal.value) {
         //console.log('hide modal');
         bsModal.value.hide();
     }
-};
-
-defineExpose({
-    showModal,
-    hideModal
-});
+}
 
 watch(
     () => props.show,
@@ -46,56 +41,51 @@ watch(
     }
 );
 
-const save = () => {
-    emit('saveModal');
+defineExpose({
+    showModal,
+    hideModal
+});
+
+const submit = () => {
+    emit('submitAppModal');
 };
 
 onMounted(() => {
-    //console.log('user note modal mounted');
-    bsModal.value = new bootstrap.Modal('#user-note-modal', {
+    //console.log('alert modal mounted');
+    bsModal.value = new bootstrap.Modal('#app-modal', {
         keyboard: false,
         backdrop: 'static'
     });
     
-    bsModalElem.value = document.getElementById('user-note-modal');
+    bsModalElem.value = document.getElementById('app-modal');
     
     bsModalElem.value.addEventListener('hidden.bs.modal', event => {
-        //console.log('modal was hidden');
-        if (props.show) {
-            //console.log('emit close event');
-            emit('closeModal');
-        }
+        //console.log('modal was hidden; emit close event');
+        emit('closeAppModal');
     });
 });
 
 onUnmounted(() => {
-    //console.log('user note modal unmounted');
+    //console.log('alert modal unmounted');
     bsModal.value.hide();
 });
 </script>
 
 <template>
     <teleport to="body">
-        <div id="user-note-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div id="app-modal" class="modal fade" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Note</h5>
+                        <h5 class="modal-title">{{ title }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <template v-if="formErrors">
-                            <div class="alert alert-danger">
-                                <div v-for="error in formErrors">
-                                    {{ error }}
-                                </div>
-                            </div>
-                        </template>
                         <slot />
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" @click="save">Save changes</button>
+                        <button type="button" class="btn btn-primary d-none" @click="submit">Submit</button>
                     </div>
                 </div>
             </div>
