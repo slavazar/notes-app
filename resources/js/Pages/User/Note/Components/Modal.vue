@@ -17,14 +17,26 @@ const props = defineProps({
 
 const emit = defineEmits(['closeModal', 'saveModal']);
 
+const showModal = () => {
+    if (bsModal.value) {
+        bsModal.value.show();
+    }
+};
+
+const hideModal = () => {
+    if (bsModal.value) {
+        //console.log('hide modal');
+        bsModal.value.hide();
+    }
+};
+
 watch(
     () => props.show,
     () => {
         if (props.show) {
-            bsModal.value.show();
+            showModal();
         } else {
-            //console.log('hide modal');
-            bsModal.value.hide();
+            hideModal();
         }
     }
 );

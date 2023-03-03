@@ -29,7 +29,7 @@ const resetPage = () => {
     });
 };
 
-const refreshPage = () => {
+const reloadPage = () => {
     router.reload({
         preserveState: false,
         preserveScroll: false
@@ -44,7 +44,7 @@ const openModalWindow = () => {
     showModalWindow.value = true;
 };
 
-async function closeModalWindow() {
+function closeModalWindow() {
     showModalWindow.value = false;
     modalWindowErrors.value = null;
 
@@ -77,7 +77,8 @@ const storeUserNote = () => {
             return;
         }
 
-        closeModalWindow().then(resetPage);
+        closeModalWindow();
+        resetPage();
     });
 };
 
@@ -121,7 +122,8 @@ const updateUserNote = (id) => {
             return;
         }
         
-        closeModalWindow().then(refreshPage);
+        closeModalWindow();
+        reloadPage();
     });
 };
 
