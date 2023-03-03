@@ -153,6 +153,8 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
+    
+    'allow_registration' => env('APP_ALLOW_REGISTRATION', false),
 
     'providers' => [
 
