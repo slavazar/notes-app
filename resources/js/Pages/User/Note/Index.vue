@@ -8,7 +8,7 @@ import UserNoteModal from '@/Pages/User/Note/Components/Modal.vue';
 import Pagination from '@/Shared/Pagination.vue';
 
 const showModalWindow = ref(false);
-const modalWindowErrors = ref(null);
+const formErrors = ref(null);
 
 const userNoteForm = useForm({
     id: null,
@@ -46,7 +46,7 @@ const openModalWindow = () => {
 
 function closeModalWindow() {
     showModalWindow.value = false;
-    modalWindowErrors.value = null;
+    formErrors.value = null;
 
     userNoteForm.reset();
 };
@@ -64,14 +64,14 @@ const storeUserNote = () => {
     }).then((response) => {
         if (response.data.error) {
             if (response.data.error.code == 406) {
-                modalWindowErrors.value = [];
+                formErrors.value = [];
                 let errors = response.data.error.errors;
                 Object.entries(errors).forEach(entry => {
                     let [key, messages] = entry;
-                    modalWindowErrors.value = modalWindowErrors.value.concat(messages);
+                    formErrors.value = formErrors.value.concat(messages);
                 });
             } else {
-                modalWindowErrors.value = [response.data.error.message];
+                formErrors.value = [response.data.error.message];
             }
 
             return;
@@ -109,14 +109,14 @@ const updateUserNote = (id) => {
     }).then((response) => {
         if (response.data.error) {
             if (response.data.error.code == 406) {
-                modalWindowErrors.value = [];
+                formErrors.value = [];
                 let errors = response.data.error.errors;
                 Object.entries(errors).forEach(entry => {
                     let [key, messages] = entry;
-                    modalWindowErrors.value = modalWindowErrors.value.concat(messages);
+                    formErrors.value = formErrors.value.concat(messages);
                 });
             } else {
-                modalWindowErrors.value = [response.data.error.message];
+                formErrors.value = [response.data.error.message];
             }
 
             return;
@@ -174,7 +174,14 @@ function destroyUserNote(id) {
             </div>
         </div>
         <Pagination :links="user_notes.links" />
-        <UserNoteModal :show="showModalWindow" :form-errors="modalWindowErrors" @close-modal="closeModalWindow" @save-modal="saveUserNote">
+        <UserNoteModal :show="showModalWindow" @close-modal="closeModalWindow" @save-modal="saveUserNote">
+            <template v-if="formErrors">
+                <div class="alert alert-danger">
+                    <div v-for="error in formErrors">
+                        {{ error }}
+                    </div>
+                </div>
+            </template>
             <div class="mb-3">
                 <label class="form-label">Title</label>
                 <input type="text" class="form-control" v-model="userNoteForm.title">
