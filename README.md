@@ -11,3 +11,10 @@ The application is created using:
 - Inertia JS
 - Bootstrap CSS 5.x
 - HTML
+
+Demo site
+
+https://notes-app.vocabulary-list.com/
+
+User: user12345@example.com
+Password: password12345
