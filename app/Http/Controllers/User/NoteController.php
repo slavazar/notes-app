@@ -14,15 +14,27 @@ class NoteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $notes = Auth::user()
-            ->notes()
-            ->orderBy('id', 'desc')
-            ->paginate(8);
+        $searchText = $request->query('search');
+        
+        $notes = Auth::user()->notes();
+        
+        if ($searchText) {
+            $notes = $notes
+                ->where('title', 'like', '%' . $searchText . '%')
+                ->orderBy('id', 'desc')
+                ->paginate(8)
+                ->withQueryString();
+        } else {
+            $notes = $notes
+                ->orderBy('id', 'desc')
+                ->paginate(8);
+        }
         
         return Inertia::render('User/Note/Index', [
             'user_notes' => $notes,
+            'search_text' => $searchText
         ]);
     }
 

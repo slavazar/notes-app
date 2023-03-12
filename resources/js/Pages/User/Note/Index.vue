@@ -2,7 +2,7 @@
 import { Head } from "@inertiajs/vue3";
 import { Link } from "@inertiajs/vue3";
 import { useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { watch, ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import UserNoteModal from '@/Pages/User/Note/Components/Modal.vue';
 import Pagination from '@/Shared/Pagination.vue';
@@ -10,16 +10,43 @@ import Pagination from '@/Shared/Pagination.vue';
 const showModalWindow = ref(false);
 const formErrors = ref(null);
 
-const userNoteForm = useForm({
-    id: null,
-    title: null,
-    description: null
-});
-
 const props = defineProps({
     user_notes: {
         type: Object,
     },
+    search_text: {
+        type: String
+    },
+});
+
+const searchText = ref(props.search_text);
+const delayTimer = ref(null);
+
+watch(
+    searchText,
+    (value) => {
+        getSearchResults(value);
+    }
+);
+
+async function getSearchResults(value) {
+    clearTimeout(delayTimer.value);
+    
+    delayTimer.value = setTimeout(function() {
+        console.log('Searching: ' + value);
+        router.get(route("account.notes.index"), {
+            search: value
+        }, {
+            preserveState: true,
+            preserveScroll: true
+        });
+    }, 500);
+}
+
+const userNoteForm = useForm({
+    id: null,
+    title: null,
+    description: null
 });
 
 const resetPage = () => {
@@ -154,6 +181,18 @@ function destroyUserNote(id) {
         <div class="row mb-3">
             <div class="col">
                 <a href="#" @click.prevent="createUserNote" class="btn btn-primary">Add a note</a>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="form-label">Search</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" v-model="searchText">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row items mb-3">
