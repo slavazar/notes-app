@@ -13,8 +13,8 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
-    password: '',
+    email: 'user12345@example.com',
+    password: 'password12345',
     remember: false,
 });
 
@@ -47,6 +47,7 @@ const submit = () => {
                             required
                             autofocus
                             autocomplete="username"
+                            placeholder="user12345@example.com"
                         />
 
                         <InputError class="" :message="form.errors.email" />
@@ -62,6 +63,7 @@ const submit = () => {
                             v-model="form.password"
                             required
                             autocomplete="current-password"
+                            placeholder="password12345"
                         />
 
                         <InputError class="mt-2" :message="form.errors.password" />
