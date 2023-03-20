@@ -14,7 +14,7 @@ The application is created using:
 
 Demo site
 
-https://notes-app.vocabulary-list.com/
+http://notes-app.vocabulary-list.com/
 
 User: user12345@example.com
 Password: password12345
