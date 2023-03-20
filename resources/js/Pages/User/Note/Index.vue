@@ -184,13 +184,18 @@ function destroyUserNote(id) {
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-2">
-                        <label class="form-label">Search</label>
+            <div class="col-md-8">
+                <div class="d-flex">
+                    <div class="me-3 align-self-center">
+                        Search
                     </div>
-                    <div class="col-md-10">
+                    <div class="flex-grow-1">
                         <input type="text" class="form-control" v-model="searchText">
+                    </div>
+                    <div class="ms-3 align-self-center">
+                        <Link class="" :href="route('account.notes.index')">
+                            Reset
+                        </Link>
                     </div>
                 </div>
             </div>
