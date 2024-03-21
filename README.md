@@ -14,7 +14,7 @@ The application is created using:
 
 Demo site
 
-http://notes-app.vocabulary-list.com/
+http://notes-app.weblab.pw/
 
 User: user12345@example.com
 Password: password12345
