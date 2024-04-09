@@ -1,6 +1,6 @@
 ### Simple web application to create, update notes.
 
-The user creates, updates the note in the modal window (Bootstrap 5 modal plugin).
+The user creates, updates the note (the Bootstrap 5 modal plugin is used).
 
 The application is created using:
 - PHP
