@@ -1,8 +1,9 @@
 ### Simple web application to create, update notes.
 
-The user creates, updates the note (the Bootstrap 5 modal plugin is used).
+The user can create, update, delete notes.
+Creating a note, updating a note is done in the Bootstrap modal window.
 
-The application is created using:
+The application was created using:
 - PHP
 - Laravel 10.x framework
 - MySQL
